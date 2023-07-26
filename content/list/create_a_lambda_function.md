@@ -1,4 +1,4 @@
-Here, we'll create a Lambda function that will list all items in the DynamoDB table. You can create the function using the AWS Management Console, AWS CLI, or the AWS SDK. 
+Here, we'll create a Lambda function that will list all items in the DynamoDB table.
 
 
 ```ts
@@ -37,4 +37,4 @@ export class RestWithCdkTypescriptStack extends Stack {
 }
 ```
 
-This code creates a Lambda function with the `Python 3.8 runtime`, using a handler function named `list_weather.handler`. The code property is set to a directory named lambda, which contains the code for the Lambda function. The environment property is set with the name of the DynamoDB table and the primary key field name. Finally, the grant_read_data method is called to grant the function permissions to read data from the DynamoDB table.
+This code creates a Lambda function with the `Python 3.8 runtime`, using a handler function named `listWeather.handler`. The code property is set to a directory named lambda, which contains the code for the Lambda function. The environment property is set with the name of the DynamoDB table and the primary key field name. Finally, the grant_read_data method is called to give the function permissions to read data from the DynamoDB table.

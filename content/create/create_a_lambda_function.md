@@ -1,8 +1,6 @@
 ## Create a Lambda Resource
 
-Create a Lambda resource to handle the API requests and insert the data into the DynamoDB table. You can create the function using the AWS Management Console, AWS CLI, or the AWS SDK. 
-
-Here's how to create a lambda function using the CDK with Python:
+Create a Lambda resource to handle the API requests and insert the data into the DynamoDB table.
 
 
 ```ts
@@ -36,4 +34,4 @@ export class RestWithCdkTypescriptStack extends Stack {
 ```
 
 
-This will create a Lambda function with the `NODEJS_14_X` runtime, using a handler function named `create_weather.lambda_handler`. The code property is set to a directory named lambda_handler, which contains the `code` for the Lambda function. The `environment` property is set with the name of the `DynamoDB table` and the `primary key field name`. The `grant_write_data` method is called to `grant` the function `permissions` to `write data` to the `DynamoDB table`.
+This will create a Lambda function with the `NODEJS_14_X` runtime, using a handler function named `createWeather.lambdaHandler`. The code property is set to a directory named lambda_handler, which contains the `code` for the Lambda function. The `environment` property is set with the name of the `DynamoDB table` and the `primary key field name`. The `grantWriteData` method is called to give the function `permissions` to `write data` to the `DynamoDB table`.

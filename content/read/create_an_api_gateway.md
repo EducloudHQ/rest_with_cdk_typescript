@@ -2,33 +2,51 @@
 
 Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. 
 
-```py
-from aws_cdk import Stack
-from aws_cdk import aws_apigateway as _apigateway
-from aws_cdk import aws_dynamodb as _dynamodb
-from aws_cdk import aws_lambda as _lambda
-from constructs import Construct
 
+```ts
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as apigw from 'aws-cdk-lib/aws-apigateway'
+import { Construct } from 'constructs';
+import path = require('path');
 
-class RestWithCdkPythonStack(Stack):
+// import lambda = require('@aws-cdk/aws-lambda');
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
-##  Api Gateway resource
-        weather_api = _apigateway.RestApi(
-            self,
-            'weather_rest_api'
-        )
+export class RestWithCdkTypescriptStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+    const table = new dynamodb.Table(this, 'CdkTypescriptWeatherTable', {
+            tableName:"cdkTypescript1",
+            partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+        }
+    );
+        
+        // LAmbda delete resource
 
-## Route and method to trigger the creat_weather_lambda function
-        weather_api.root.add_resource("weather").add_method(
+         const get_weather_lambda = new lambda.Function(this, "deleteWeatherLambdaFunction",
+         {
+           functionName: 'cdk-typescript-delete',
+           runtime:lambda.Runtime.NODEJS_14_X,
+           handler: 'getWeather.lambdaHandler',
+           code : lambda.Code.fromAsset('src'),
+           environment: { 
+             'TABLE_NAME': table.tableName
+           }
+         })
+      // Lambda permissions
+         table.grantReadData(get_weather_lambda)
+
+         const weathers = weather_api.root.addResource("weather")
+        const weather = weathers.addResource('{id}')
+        weather.addMethod(
             "GET",
-            _apigateway.LambdaIntegration(
-                handler=read_weather_lambda
-            )
-        )
+            new apigw.LambdaIntegration(get_weather_lambda)
+        )   
+  }
+}
 ```
 
-This will create an API Gateway REST API with a single endpoint at `/weather` that accepts `GET` requests. 
+This will create an API Gateway REST API with a single endpoint at `/weather/{id}` that accepts `GET` requests. 
 
 The `LambdaProxyIntegration` method is used to `integrate` the Lambda function with the `API Gateway`.

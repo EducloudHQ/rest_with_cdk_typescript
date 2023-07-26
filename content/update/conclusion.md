@@ -8,4 +8,4 @@ Keep in mind that this is just one example of how to update an item in DynamoDB 
 
 ## Github Repository
 
-The complete code for this section is in the `update` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_python/tree/update)
+The complete code for this section is in the `update` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_typescript/tree/update)

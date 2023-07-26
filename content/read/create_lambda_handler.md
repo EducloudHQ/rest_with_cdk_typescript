@@ -1,38 +1,76 @@
 ## Create a Lambda Handler to Insert Items into DynamoDB
 
-Inside the `src` folder, create a file called `get_weather.py`.
+Inside the `src` folder, create a file called `getWeather.ts`.
 
-Open up the `get_weather.py` file and type in the following code.
+Open up the `getWeather.ts` file and type in the following code.
 
-```python
-# lambda function to get single item from dynamodb table
-import json
-import boto3
-import os
-dynamodb = boto3.resource('dynamodb')
-table_name = os.environ["TABLE_NAME"]
+```ts
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as AWS from "aws-sdk";
 
+const docClient = new AWS.DynamoDB.DocumentClient();
+const tableName = process.env.TABLE_NAME as string;
+const region = process.env.Region;
 
-def lambda_handler(event, context):
-    weather_id = str(event['pathParameters']['id'])
-    table = dynamodb.Table(table_name)
-    try:
-        result = table.get_item(Key={'id': weather_id})
-        return {
-            'statusCode': 200,
-            'body': json.dumps(result['Item'])
+module.exports.lambdaHandler = async (event: any): Promise<APIGatewayProxyResult> => {
+    let response: APIGatewayProxyResult;
+    console.log(event)
+    console.log(event.pathParameters.id)
+    const weather_id = event.pathParameters.id
+    var params = {
+            Key:{
+                id: {
+                    "S": weather_id as string
+                },
+            },
+        TableName: process.env.TABLE_NAME
+    };
+    try {
+        
+        const res = await docClient.get(
+            {
+                Key:{
+                    id: {
+                        "S": weather_id as string
+                    },
+                },
+            TableName: tableName
         }
-    except:
-        return {
-            'statusCode': 500,
-            'message': "Unable to get item"
-        }
+        ).promise()
+        response = {
+            statusCode: 200,
+            body: JSON.stringify({
+                Body: res.Item,
+            }),
+        };
+    } catch (err: unknown) {
+        console.log(err);
+        response = {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err instanceof Error ? err.message : 'some error happened',
+            }),
+        };
+    }
+    return response;
+};
 ```
-In the above code, we import dynamodb resource from boto3 then use that to access our dynamodb table.
+In the above code, we imports all AWS services as `AWS` from `aws-sdk` then use that to access our dynamodb table.
 
 The weather item id is gotten from pathParameters event object and used as a value in 
 getting an item from dynamodb.
 
-`response = table.get_item(Key={'id': weather_id})`
+```ts
+docClient.get(
+            {
+                Key:{
+                    id: {
+                        "S": weather_id as string
+                    },
+                },
+            TableName: tableName
+        }
+        ).promise()
+```
 
-We then wrap the method in a `try-except` block and return a status and a message, based on the result.
+We then wrap the method in a `try-catch` block and return a status and a message, based on the result.

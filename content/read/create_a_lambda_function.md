@@ -1,31 +1,42 @@
 ## Create a Lambda Resource
 
-Create a Lambda resource to handle the API requests and insert the data into the DynamoDB table. You can create the function using the AWS Management Console, AWS CLI, or the AWS SDK. 
-
-Here's how to create a lambda function using the CDK with Python:
+Create a Lambda resource to handle the API requests and get sigle weather data from DynamoDB table.
 
 
-```py
-from aws_cdk import Stack
-from aws_cdk import aws_lambda as _lambda
-from constructs import Construct
+```ts
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as apigw from 'aws-cdk-lib/aws-apigateway'
+import { Construct } from 'constructs';
+import path = require('path');
 
+export class RestWithCdkTypescriptStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+    const table = new dynamodb.Table(this, 'CdkTypescriptWeatherTable', {
+            tableName:"cdkTypescript1",
+            partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+        }
+    );
+        
+        // LAmbda delete resource
 
-class RestWithCdkPythonStack(Stack):
-
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
-
-## Defining lambda resource
-        read_weather_lambda = _lambda.Function(self,"GetWeatherLambdaFunction",
-                                         runtime=_lambda.Runtime.PYTHON_3_8,
-                                         handler='get_weather.lambda_handler',
-                                         code=_lambda.Code.from_asset('src'),
-                                         environment={ 
-                                            'TABLE_NAME': table.table_name
-                                         })
-    table.grant_read_data(read_weather_lambda);
+         const get_weather_lambda = new lambda.Function(this, "listWeatherLambdaFunction",
+            {
+            functionName: 'cdk-typescript-list',
+            runtime:lambda.Runtime.NODEJS_14_X,
+            handler: 'getWeathers.lambdaHandler',
+            code : lambda.Code.fromAsset('src'),
+            environment: { 
+                'TABLE_NAME': table.tableName
+            }
+            })
+ 
+     // Lambda permissions
+     table.grantReadData(get_weather_lambda)
+  }
+}
 ```
 
-
-This will create a Lambda function with the PYTHON_3_8 runtime, using a handler function named `get_weather.lambda_handler`. The code property is set to a directory named lambda_handler, which contains the `code` for the Lambda function. The `environment` property is set with the name of the `DynamoDB table` and the `primary key field name`. The `grant_read_data` method is called to `grant` the function `permissions` to `read data` from `DynamoDB table`.
+This will create a Lambda function with the `NODEJS_14_X` runtime, using a handler function named `getWeather.lambdaHandler`. The code property is set to a directory named lambdaHandler, which contains the `code` for the Lambda function. The `environment` property is set with the name of the `DynamoDB table` and the `primary key field name`. The `grantReadData` method is called to give the function `permissions` to `read data` from `DynamoDB table`.

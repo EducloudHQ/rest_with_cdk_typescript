@@ -7,4 +7,4 @@ With these tools and services, you can easily create powerful APIs that can hand
 
 ## Github Repository
 
-The complete code for this section is in the `get` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_python/tree/get)
+The complete code for this section is in the `get` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_typescript/tree/get)
