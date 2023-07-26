@@ -1,44 +1,53 @@
 ## Create a Lambda Handler to Insert Items into DynamoDB
 
-Inside the `src` folder, create a file called `delete_weather.py`.
+Inside the `src` folder, create a file called `deleteWeather.ts`.
 
-Open up the `delete_weather.py` file and type in the following code.
+Open up the `deleteWeather.ts` file and type in the following code.
 
-```python
-# lambda function to delete a single item from dynamodb table
-import json
-import os
+```ts
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as AWS from 'aws-sdk'
 
-import boto3
+const tableName = process.env.TABLE_NAME as string;
+const region = process.env.Region;
+const client = new AWS.DynamoDB.DocumentClient();
 
-dynamodb = boto3.resource('dynamodb')
-table_name = os.environ.get("TABLE_NAME")
-
-
-def lambda_handler(event, context):
-    table = dynamodb.Table(table_name)
-    weather_id = str(json.loads(event['pathParameters'])['id'])
-    id_key = {
-        "id": weather_id
+module.exports.lambdaHandler = async (event: any): Promise<APIGatewayProxyResult> => {
+    let response: APIGatewayProxyResult;
+    const weatherId = event.pathParameters.id as string
+    // const weatherId = JSON.parse(event.pathParameters)
+    // console.log(weatherId)
+    try {
+        const res = await client.delete({
+            TableName: tableName,
+            Key:{
+                id:{"S":weatherId}
+            }
+        }).promise()
+        response = {
+            statusCode: 200,
+            body: JSON.stringify(
+                {
+                    message: 'Weather Item deleted successfully'
+                }
+            ),
+        };
+    } catch (err: unknown) {
+        console.log(err);
+        response = {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err instanceof Error ? err.message : 'some error happened',
+            }),
+        };
     }
-    print(event)
-    try:
-        table.delete_item(Key=id_key)
-        return {
-            'statusCode': 200,
-            'body': "Weather Delete Succeessfull"
-        }
-    except table_name:
-        return {
-            'statusCode': 500,
-            'body': "An error occured. Weather not deleted"
-        }
-
+    return response;
+};
 ```
 In the above code, we import dynamodb resource from boto3 then use that to access our dynamodb table.
 
 The weather item id is gotten from pathParameters event object and used as a value in identify the item to be deleted from dynamodb.
 
-`response = table.delete_item(Key={'id': weather_id})`
+`response = client.delete(Key={'id': weather_id})`
 
-We then wrap the method in a `try-except` block and return a status and a message, based on the result.
+We then wrap the method in a `try-catch` block and return a status and a message, based on the result.

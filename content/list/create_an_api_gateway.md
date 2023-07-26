@@ -1,5 +1,6 @@
-Here, we'll create a Lambda function that will list all items in the DynamoDB table. You can create the function using the AWS Management Console, AWS CLI, or the AWS SDK. 
+## Create an API Gateway REST API
 
+Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. 
 
 ```ts
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
@@ -8,6 +9,8 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigw from 'aws-cdk-lib/aws-apigateway'
 import { Construct } from 'constructs';
 import path = require('path');
+
+// import lambda = require('@aws-cdk/aws-lambda');
 
 export class RestWithCdkTypescriptStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -33,8 +36,16 @@ export class RestWithCdkTypescriptStack extends Stack {
  
      // Lambda permissions
      table.grantReadData(list_weather_lambda)
+
+         const weathers = weather_api.root.addResource("weathers")
+        weathers.addMethod(
+            "GET",
+            new apigw.LambdaIntegration(list_weather_lambda)
+        )    
   }
 }
 ```
 
-This code creates a Lambda function with the `Python 3.8 runtime`, using a handler function named `list_weather.handler`. The code property is set to a directory named lambda, which contains the code for the Lambda function. The environment property is set with the name of the DynamoDB table and the primary key field name. Finally, the grant_read_data method is called to grant the function permissions to read data from the DynamoDB table.
+This will create an API Gateway REST API with a single endpoint at `/weathers` that accepts `GET` requests and list all weather items in dynamodb table. 
+
+The `LambdaProxyIntegration` method is used to `integrate` the Lambda function with the `API Gateway`.

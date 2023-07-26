@@ -4,4 +4,4 @@ With these tools and services, you can easily list all items in DynamoDB and bui
 
 ## Github Repository
 
-The complete code for this section is in the `list` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_python/tree/list)
+The complete code for this section is in the `list` branch of the project's github repository [here](https://github.com/EducloudHQ/rest_with_cdk_typescript/tree/list)
