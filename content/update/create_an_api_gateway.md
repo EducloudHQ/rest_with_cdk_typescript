@@ -1,6 +1,6 @@
 ## Create an API Gateway REST API
 
-Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. 
+Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 
 ```ts

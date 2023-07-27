@@ -38,7 +38,3 @@ To build a REST API with typescript, CDK, Lambda, API Gateway, and DynamoDB, we 
 2. Define the API endpoints and methods, including GET, POST, PUT, and DELETE
 3. Use DynamoDB to store and retrieve data for the API
 4. Deploy the API using CDK
-
-## Conclusion
-
-Building REST APIs with typescript, CDK, Lambda, API Gateway, and DynamoDB is a powerful way to create scalable and cost-effective applications. By leveraging the power of AWS services, developers can focus on building great applications without worrying about infrastructure management. Try out this approach for your next REST API project and see the benefits for yourself!

@@ -1,3 +1,5 @@
+![alt](/assets/cdk-ts.png)
+
 ```
 Content
     overview
