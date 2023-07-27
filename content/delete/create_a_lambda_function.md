@@ -1,6 +1,6 @@
 ## Create a Lambda Resource
 
-Create a Lambda resource to handle the API requests and delete data from the DynamoDB table.
+Create a Lambda resource to handle the API requests and delete data from the DynamoDB table. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 
 ```ts

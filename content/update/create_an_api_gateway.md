@@ -21,8 +21,7 @@ export class RestWithCdkTypescriptStack extends Stack {
             partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
         }
     );
-        
-        // LAmbda delete resource
+      
 
          const updat_weather_lambda = new lambda.Function(this, "updateWeatherLambdaFunction",
          {

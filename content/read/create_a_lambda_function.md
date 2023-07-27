@@ -1,6 +1,6 @@
 ## Create a Lambda Resource
 
-Create a Lambda resource to handle the API requests and get sigle weather data from DynamoDB table.
+Create a Lambda resource to handle the API requests and get sigle weather data from DynamoDB table. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 
 ```ts
@@ -19,10 +19,9 @@ export class RestWithCdkTypescriptStack extends Stack {
             partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
         }
     );
-        
-        // LAmbda delete resource
+      
 
-         const get_weather_lambda = new lambda.Function(this, "listWeatherLambdaFunction",
+         const get_weather_lambda = new lambda.Function(this, "getWeatherLambdaFunction",
             {
             functionName: 'cdk-typescript-list',
             runtime:lambda.Runtime.NODEJS_14_X,

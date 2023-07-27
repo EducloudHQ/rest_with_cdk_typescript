@@ -1,6 +1,6 @@
 ## Create an API Gateway REST API
 
-Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. 
+Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 
 ```ts
@@ -21,10 +21,8 @@ export class RestWithCdkTypescriptStack extends Stack {
             partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
         }
     );
-        
-        // LAmbda delete resource
 
-         const get_weather_lambda = new lambda.Function(this, "deleteWeatherLambdaFunction",
+         const get_weather_lambda = new lambda.Function(this, "getWeatherLambdaFunction",
          {
            functionName: 'cdk-typescript-delete',
            runtime:lambda.Runtime.NODEJS_14_X,

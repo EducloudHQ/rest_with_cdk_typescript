@@ -1,6 +1,6 @@
 ## Create an API Gateway REST API
 
-Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. 
+Create an API Gateway `REST API` to handle the API requests and forward them to the Lambda function. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 ```ts
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
@@ -10,7 +10,6 @@ import * as apigw from 'aws-cdk-lib/aws-apigateway'
 import { Construct } from 'constructs';
 import path = require('path');
 
-// import lambda = require('@aws-cdk/aws-lambda');
 
 export class RestWithCdkTypescriptStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -21,7 +20,6 @@ export class RestWithCdkTypescriptStack extends Stack {
         }
     );
         
-        // LAmbda delete resource
 
          const list_weather_lambda = new lambda.Function(this, "listWeatherLambdaFunction",
             {

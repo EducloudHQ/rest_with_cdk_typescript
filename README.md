@@ -12,7 +12,7 @@ Content
         |-2.4.install_the_cdk.md
     |- 3.setup
         |-3.1.initialize_project.md
-    |- 4.the_cdk
+    |- 4.the_cdk_blocks
         |-4.1.the_cdk_building_block_concept.md
     |- 5.create    
         |-5.1.overview.md  

@@ -1,4 +1,4 @@
-Here, we'll create a Lambda function that will list all items in the DynamoDB table.
+Here, we'll create a Lambda function that will list all items in the DynamoDB table. Navigate to `lib/*-stack.ts` and modify it with the following code.
 
 
 ```ts
@@ -18,7 +18,6 @@ export class RestWithCdkTypescriptStack extends Stack {
         }
     );
         
-        // LAmbda delete resource
 
          const list_weather_lambda = new lambda.Function(this, "listWeatherLambdaFunction",
             {
