@@ -1,29 +1,39 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as AWS from "aws-sdk";
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Handler,
+} from "aws-lambda";
 
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
-const region = process.env.Region;
+import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 
-const docClient = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.TABLE_NAME as string;
+const client = new DynamoDBClient({});
 
-module.exports.lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let response: APIGatewayProxyResult;
-    try {
-        const res = await docClient.scan({TableName: tableName}).promise()
-        // console.log("Hello world",test)
-        response = {
-            statusCode: 200,
-            body: JSON.stringify(res.Items),
-        };
-    } catch (err: unknown) {
-        console.log(err);
-        response = {
-            statusCode: 500,
-            body: JSON.stringify({
-                message: err instanceof Error ? err.message : 'some error happened',
-            }),
-        };
-    }
-    return response;
+const tableName: string = process.env.TABLE_NAME!;
+
+export const lambdaHandler: Handler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const command = new ScanCommand({ TableName: tableName });
+
+    const scanResponse = await client.send(command);
+
+    const items = scanResponse.Items?.map((item) => {
+      return unmarshall(item);
+    });
+    return {
+      statusCode: 200,
+      body: JSON.stringify(items),
+    };
+  } catch (err: unknown) {
+    console.log(err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: err instanceof Error ? err.message : "some error happened",
+      }),
+    };
+  }
 };
