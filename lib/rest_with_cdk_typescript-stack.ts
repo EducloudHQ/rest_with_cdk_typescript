@@ -15,7 +15,7 @@ export class RestWithCdkTypescriptStack extends Stack {
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
     });
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // LAmbda create resource
+    // Lambda create resource
 
     const create_weather_lambda = new lambda.Function(
       this,

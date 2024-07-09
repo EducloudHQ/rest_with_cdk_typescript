@@ -5,10 +5,13 @@ import {
 } from "aws-lambda";
 
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { GetCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({});
 
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
 export const lambdaHandler: Handler = async (
   event: APIGatewayProxyEvent
@@ -27,26 +30,17 @@ export const lambdaHandler: Handler = async (
   const weather_id = event.pathParameters.id;
   var params = {
     Key: {
-      id: {
-        S: weather_id as string,
-      },
+      id: weather_id,
     },
     TableName: tableName,
   };
   try {
-    const command = new GetItemCommand(params);
-
-    const getResponse = await client.send(command);
-
-    const item = unmarshall(getResponse.Item!);
-
-    console.log("item is ", item);
+    const data = await ddbDocClient.send(new GetCommand(params));
+    console.log(`get response is `, JSON.stringify(data.Item));
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        item,
-      }),
+      body: JSON.stringify(data.Item),
     };
   } catch (err: unknown) {
     console.log(err);

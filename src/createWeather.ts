@@ -4,8 +4,11 @@ import {
   Handler,
 } from "aws-lambda";
 
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 export const client = new DynamoDBClient({});
+
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
 //const region = process.env.Region;
 
@@ -20,25 +23,23 @@ export const lambdaHandler: Handler = async (
       }),
     };
   }
-  var blog_id = Math.floor(Math.random() * 1000).toString();
+
+  const weather_event = JSON.parse(event.body);
+  var weather_id = Math.floor(Math.random() * 1000).toString();
 
   try {
-    const command = new PutItemCommand({
+    const command = new PutCommand({
       TableName: tableName,
       ReturnValues: "NONE",
       Item: {
-        id: {
-          S: blog_id,
-        },
-        weather: {
-          S: JSON.parse(event.body).weather as string,
-        },
-        town: {
-          S: JSON.parse(event.body).town,
-        },
+        id: weather_id,
+
+        weather: weather_event.weather,
+
+        town: weather_event.town,
       },
     });
-    await client.send(command);
+    await ddbDocClient.send(command);
 
     return {
       statusCode: 200,

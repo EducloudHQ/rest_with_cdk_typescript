@@ -4,9 +4,11 @@ import {
   Handler,
 } from "aws-lambda";
 
-import { DynamoDBClient, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+export const client = new DynamoDBClient({});
 
-const client = new DynamoDBClient({});
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
 export const lambdaHandler: Handler = async (
   event: APIGatewayProxyEvent
@@ -33,29 +35,24 @@ export const lambdaHandler: Handler = async (
 
   console.log(event.pathParameters.id);
   const weather_id = event.pathParameters.id;
-  const weather_event = JSON.parse(event["body"]);
+  const weather_event = JSON.parse(event.body);
 
   var params = {
     Key: {
-      id: {
-        S: weather_id as string,
-      },
+      id: weather_id,
     },
     UpdateExpression: "set weather = :weather, town = :town",
     ExpressionAttributeValues: {
-      ":weather": {
-        S: weather_event.weather,
-      },
-      ":town": {
-        S: weather_event.town,
-      },
+      ":weather": weather_event.weather,
+
+      ":town": weather_event.town,
     },
     returnValues: "UPDATED_NEW",
     TableName: tableName,
   };
   try {
-    const command = new UpdateItemCommand(params);
-    await client.send(command);
+    const command = new UpdateCommand(params);
+    await ddbDocClient.send(command);
 
     return {
       statusCode: 200,

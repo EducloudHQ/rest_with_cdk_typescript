@@ -3,8 +3,11 @@ import {
   APIGatewayProxyResult,
   Handler,
 } from "aws-lambda";
-import { DynamoDBClient, DeleteItemCommand } from "@aws-sdk/client-dynamodb";
-const client = new DynamoDBClient({});
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+export const client = new DynamoDBClient({});
+
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
 
 export const lambdaHandler: Handler = async (
@@ -23,13 +26,13 @@ export const lambdaHandler: Handler = async (
   const weatherId = event.pathParameters.id as string;
 
   try {
-    const command = new DeleteItemCommand({
+    const command = new DeleteCommand({
       TableName: tableName,
       Key: {
-        id: { S: weatherId },
+        id: weatherId,
       },
     });
-    await client.send(command);
+    await ddbDocClient.send(command);
 
     response = {
       statusCode: 200,
