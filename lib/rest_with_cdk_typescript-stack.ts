@@ -1,17 +1,16 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
 import * as apigw from "aws-cdk-lib/aws-apigateway";
 import { Construct } from "constructs";
-import path = require("path");
 
 export class RestWithCdkTypescriptStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const table = new dynamodb.Table(this, "CdkTypescriptWeatherTable", {
-      tableName: "cdkTypescript1",
+      tableName: "weather_rest_api_db",
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
     });
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,10 +29,11 @@ export class RestWithCdkTypescriptStack extends Stack {
         },
       }
     );
+    // Lambda permissions
+    table.grantWriteData(create_weather_lambda);
     // Api gateway resource
     const weather_api = new apigw.RestApi(this, "weather_rest_api");
-    // Lambda permissions
-    table.grantReadWriteData(create_weather_lambda);
+
     //  Create item route
     weather_api.root
       .addResource("create-weather")
@@ -59,14 +59,14 @@ export class RestWithCdkTypescriptStack extends Stack {
 
     // Lambda permissions
     table.grantReadData(get_weather_lambda);
-    //  Create item route
+    //  get item route
     const weathers = weather_api.root.addResource("weathers");
     const weather = weathers.addResource("{id}");
     weather.addMethod("GET", new apigw.LambdaIntegration(get_weather_lambda));
 
     //////////////////////////////////////////////////////////////////////////////
 
-    // LAmbda list resource
+    // Lambda list resource
 
     const list_weather_lambda = new lambda.Function(
       this,
@@ -85,6 +85,7 @@ export class RestWithCdkTypescriptStack extends Stack {
     // Lambda permissions
     table.grantReadData(list_weather_lambda);
     //  list item route
+
     weathers.addMethod("GET", new apigw.LambdaIntegration(list_weather_lambda));
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +107,7 @@ export class RestWithCdkTypescriptStack extends Stack {
     );
 
     // Lambda permissions
-    table.grantReadWriteData(delete_weather_lambda);
+    table.grantWriteData(delete_weather_lambda);
     //  Create item route
     weather.addMethod(
       "DELETE",
@@ -115,7 +116,7 @@ export class RestWithCdkTypescriptStack extends Stack {
 
     //////////////////////////////////////////////////////////////////////////////////////
 
-    // LAmbda update resource
+    // Lambda update resource
 
     const update_weather_lambda = new lambda.Function(
       this,
@@ -132,7 +133,7 @@ export class RestWithCdkTypescriptStack extends Stack {
     );
 
     // Lambda permissions
-    table.grantReadWriteData(update_weather_lambda);
+    table.grantWriteData(update_weather_lambda);
     //  Create item route
     weather.addMethod(
       "PUT",

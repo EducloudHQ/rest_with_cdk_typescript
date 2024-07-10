@@ -6,7 +6,7 @@ import {
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
-export const client = new DynamoDBClient({});
+const client = new DynamoDBClient({});
 
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
@@ -25,7 +25,7 @@ export const lambdaHandler: Handler = async (
   }
 
   const weather_event = JSON.parse(event.body);
-  var weather_id = Math.floor(Math.random() * 1000).toString();
+  const weather_id = Math.floor(Math.random() * 1000).toString();
 
   try {
     const command = new PutCommand({
@@ -42,7 +42,7 @@ export const lambdaHandler: Handler = async (
     await ddbDocClient.send(command);
 
     return {
-      statusCode: 200,
+      statusCode: 201,
       body: JSON.stringify({
         message: "Weather item created Successfully",
       }),
