@@ -16,7 +16,7 @@ export const lambdaHandler: Handler = async (
 ): Promise<APIGatewayProxyResult> => {
   if (event.pathParameters == null) {
     return {
-      statusCode: 500,
+      statusCode: 400,
       body: JSON.stringify({
         message: "Id missing from path parameters",
       }),

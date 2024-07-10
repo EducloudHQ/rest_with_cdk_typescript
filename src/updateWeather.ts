@@ -10,23 +10,25 @@ export const client = new DynamoDBClient({});
 
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
+
 export const lambdaHandler: Handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   console.log(event);
   if (event.body == null) {
     return {
-      statusCode: 500,
+      statusCode: 400,
       body: JSON.stringify({
-        message: "Empty Input parameters",
+        message: "Invalid Input parameters",
       }),
     };
   }
+
   if (event.pathParameters == null) {
     return {
-      statusCode: 500,
+      statusCode: 400,
       body: JSON.stringify({
-        message: "Empty path parameters",
+        message: "Invalid path parameters",
       }),
     };
   }

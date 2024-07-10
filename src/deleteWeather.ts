@@ -10,13 +10,14 @@ export const client = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
 
+//url/weathers/234234
 export const lambdaHandler: Handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   let response: APIGatewayProxyResult;
   if (event.pathParameters == null) {
     return {
-      statusCode: 500,
+      statusCode: 400,
 
       body: JSON.stringify({
         message: "Id missing from path parameters",

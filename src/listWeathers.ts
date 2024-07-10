@@ -4,8 +4,6 @@ import {
   Handler,
 } from "aws-lambda";
 
-import { unmarshall } from "@aws-sdk/util-dynamodb";
-
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 export const client = new DynamoDBClient({});

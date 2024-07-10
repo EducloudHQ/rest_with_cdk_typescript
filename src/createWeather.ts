@@ -6,11 +6,11 @@ import {
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+
 const client = new DynamoDBClient({});
 
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME as string;
-//const region = process.env.Region;
 
 export const lambdaHandler: Handler = async (
   event: APIGatewayProxyEvent
@@ -25,6 +25,7 @@ export const lambdaHandler: Handler = async (
   }
 
   const weather_event = JSON.parse(event.body);
+
   const weather_id = Math.floor(Math.random() * 1000).toString();
 
   try {
